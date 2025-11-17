@@ -41,7 +41,20 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable<HomeRoute> {
+                            // Best Practice: Nicht ganzen navController übergeben,
+                            // Sondern nur benötigte Funktionen / Parameter
                             HomeScreenContent(navController = navController)
+                        }
+                        composable<ProfileRoute> { backStackEntry ->
+                            // Holt die übergebenen Elemente
+                            val profile = backStackEntry.toRoute<ProfileRoute>()
+                            ProfileScreenContent(
+                                navController = navController,
+                                name = profile.name
+                            )
+                        }
+                        composable<SettingsRoute> {
+                            SettingsScreenContent(navController = navController)
                         }
                     }
                 }

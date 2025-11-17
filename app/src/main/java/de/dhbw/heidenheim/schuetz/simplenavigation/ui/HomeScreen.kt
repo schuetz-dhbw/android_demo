@@ -37,7 +37,9 @@ fun HomeScreenContent(navController: NavController) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = {}
+            onClick = {
+                navController.navigate(ProfileRoute(name = "Max"))
+            }
         ) {
             Text (text = "Go to profile")
         }
@@ -45,7 +47,9 @@ fun HomeScreenContent(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {}
+            onClick = {
+                navController.navigate(SettingsRoute)
+            }
         ) {
             Text (text = "Go to settings")
         }

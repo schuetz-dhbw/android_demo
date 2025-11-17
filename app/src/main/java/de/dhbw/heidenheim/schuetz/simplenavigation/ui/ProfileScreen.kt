@@ -20,10 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import de.dhbw.heidenheim.schuetz.simplenavigation.ui.theme.SimpleNavigationTheme
 
 @Composable
-fun ProfileScreenContent(name: String)
+fun ProfileScreenContent(navController: NavController, name: String)
 {
     var currentName by remember { mutableStateOf(name) }
 
@@ -55,7 +57,9 @@ fun ProfileScreenContent(name: String)
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = {}
+            onClick = {
+                navController.popBackStack()
+            }
         ) {
             Text (text = "Back to home")
         }
@@ -66,6 +70,6 @@ fun ProfileScreenContent(name: String)
 @Composable
 fun ProfilePreview() {
     SimpleNavigationTheme {
-        ProfileScreenContent("Android")
+        ProfileScreenContent(rememberNavController(),"Android")
     }
 }

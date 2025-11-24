@@ -1,6 +1,7 @@
 package de.dhbw.heidenheim.schuetz.simplenavigation.ui
 
 import android.R
+import android.R.attr.name
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,16 +30,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import de.dhbw.heidenheim.schuetz.simplenavigation.ui.theme.SimpleNavigationTheme
 
 @Composable
-fun ProfileScreenContent(name: String) {
-    var currentName by remember { mutableStateOf(name) }
-    var imageUrl by remember { mutableStateOf("") }
-    var bio by remember { mutableStateOf("") }
+fun ProfileScreenContent(name: String, viewModel: ProfileViewModel = hiltViewModel()) {
+    val profileState by viewModel.profileState.collectAsStateWithLifecycle()
 
-    Column(
+    // Weiterhin lokale States für Eingabefelder
+    var currentName by remember (profileState.name) { mutableStateOf(profileState.name.ifEmpty { name }) }
+    var imageUrl by remember (profileState.imageUrl) { mutableStateOf(profileState.imageUrl) }
+    var bio by remember (profileState.bio) { mutableStateOf(profileState.bio) }
+
+    Column (
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
@@ -101,7 +109,7 @@ fun ProfileScreenContent(name: String) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { },
+            onClick = { viewModel.saveProfile(currentName, imageUrl, bio)},
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Save")

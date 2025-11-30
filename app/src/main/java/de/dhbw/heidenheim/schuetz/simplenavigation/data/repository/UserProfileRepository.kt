@@ -2,13 +2,15 @@ package de.dhbw.heidenheim.schuetz.simplenavigation.data.repository
 
 import de.dhbw.heidenheim.schuetz.simplenavigation.data.local.UserProfileDao
 import de.dhbw.heidenheim.schuetz.simplenavigation.data.local.UserProfileEntity
+import de.dhbw.heidenheim.schuetz.simplenavigation.data.remote.RandomUserApi
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UserProfileRepository @Inject constructor(
-    private val userProfileDao: UserProfileDao
+    private val userProfileDao: UserProfileDao,
+    private val randomUserApi: RandomUserApi
 ) {
     fun getUserProfile(): Flow<UserProfileEntity?> {
         return userProfileDao.getUserProfile()
@@ -22,5 +24,22 @@ class UserProfileRepository @Inject constructor(
             bio = bio
         )
         userProfileDao.insertUserProfile(profile)
+    }
+
+    suspend fun loadRandomUser(): Result<UserProfile> {
+        return try {
+            val response = randomUserApi.getRandomUsers()
+            val user = response.userList.first()
+
+            Result.success(
+                UserProfile(
+                    name = user.name.fullName(),
+                    imageUrl = user.picture.medium,
+                    bio = user.location.fullAddress()
+                )
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
